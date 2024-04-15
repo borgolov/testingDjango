@@ -16,28 +16,25 @@ def element(request, element_id):
     element_tree = []
     for element in elements:
         if element.parent is None:  # Если элемент является корневым
-            element_tree.extend(get_element_tree(element))
+            element_tree.append(get_element_tree_dict(element, element_id))
 
-    # Вызываем функцию для печати дерева элементов
-    print_element_tree(element_tree)
+    context = {
+        'element_tree_data': element_tree,
+        'active_element_id': element_id,
+    }
 
-    return JsonResponse({'resp' : None})
+    return render(request, 'menu.html', context)
         
 
-def get_element_tree(element, level=0):
-    tree = [[element]]  # Первый элемент - это сам элемент, остальные - дочерние
+def get_element_tree_dict(element : Element, active_id : int, level=0):
+    tree = {
+        'id': element.id,
+        'name': element.name,
+        'active': element.id == active_id,
+        'children': []
+    }
     for child in element.children.all():
-        child_tree = get_element_tree(child, level + 1)
-        tree[0].extend(child_tree)  # Добавляем дочерние элементы в список первого элемента
+        child_tree = get_element_tree_dict(child, active_id, level + 1)
+        tree['children'].append(child_tree)
     return tree
-
-
-def print_element_tree(tree, level=0):
-    for item in tree:
-        if isinstance(item, list):
-            # Это список дочерних элементов, печатаем их рекурсивно
-            print_element_tree(item, level + 1)
-        else:
-            # Это родительский элемент, печатаем его с отступами в зависимости от уровня
-            print('  ' * level + item.name)
     

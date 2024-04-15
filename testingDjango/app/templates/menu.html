@@ -1,4 +1,10 @@
 {% extends "base.html" %}
+{% load menu_tags %}
+
 {% block content %}
-<span>sdsd</span>
+
+{% autoescape off %}
+{% draw_menu element_tree_data active_element_id %}
+{% endautoescape %}
+
 {% endblock %}
