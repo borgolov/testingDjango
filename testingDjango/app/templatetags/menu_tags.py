@@ -16,13 +16,14 @@ def draw_menu(element_tree, active_id=None):
         html = '<ul>'
         for element in element_tree:
             active_class = 'active' if element['id'] == active_id else ''
-            expanded_class = 'expanded' if is_ancestor(element, active_id) else 'nonexpanded'
 
             if is_ancestor(element, active_id):
-                html += f'<li class="{expanded_class}"><a class="{active_class}" href="/{element["id"]}">{element["name"]}</a>'
+                html += f'<li><a class="{active_class}" href="/{element["id"]}">{element["name"]}</a>'
                 if element['children']:
                     html += draw_menu_recursive(element['children'], active_id)
                 html += '</li>'
+            else:
+                html += f'<li><a class="{active_class}" href="/{element["id"]}">{element["name"]}</a></li>'
 
         html += '</ul>'
         return html
